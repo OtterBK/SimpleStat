@@ -1,0 +1,8 @@
+name: BoKumStatus
+main: me.Bokum.Status.Main.Main
+depend: [HolographicDisplays]
+version: 1.0.0
+description: bokum's plugin!
+commands:
+  스탯:
+    description: 스탯
