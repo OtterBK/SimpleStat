@@ -11,7 +11,7 @@ public class StatData {
 	public double atk = 0;
 	public double def = 0;
 	public double dex = 0;
-	public double lv = 0;
+	public int lv = 0;
 	public double exp = 0;
 	public double hp = 0;
 	public double leftStat = 0;
@@ -41,7 +41,7 @@ public class StatData {
 			this.atk = Double.valueOf(atk);
 			this.def = Double.valueOf(def);
 			this.dex = Double.valueOf(dex);
-			this.lv = Double.valueOf(lv);
+			this.lv = Integer.valueOf(lv);
 			this.exp = Double.valueOf(exp);
 			this.hp = Double.valueOf(hp);
 			this.leftStat = Double.valueOf(leftStat);

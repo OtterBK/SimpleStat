@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class StatFunction {
 	
@@ -28,9 +30,11 @@ public class StatFunction {
 	    {
 	      public void run()
 	      {
-	    	  Bukkit.dispatchCommand(p.getServer().getConsoleSender(), "effect "+p.getName()+" 21 1 1");
+//	    	  Bukkit.dispatchCommand(p.getServer().getConsoleSender(), "effect "+p.getName()+" 21 1 1");
+			  p.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 1, 20));
 	    	  statData.updateInv();
 	    	  statData.updateStat();
+	    	  p.setLevel((int)statData.lv);
 	      }
 	    }
 	    , 20L);

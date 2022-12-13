@@ -23,19 +23,12 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemHeldEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.gmail.filoghost.holographicdisplays.api.Hologram;
-import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
-import com.gmail.filoghost.holographicdisplays.api.line.TextLine;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -69,45 +62,47 @@ public class Main extends JavaPlugin implements Listener{
 	//public Location spawnLoc = new Location(Bukkit.getWorld("world"), 0, 10, 0);
 	
 	public void onEnable(){ //스테이터스 플러그인 로드 됐을때
-		
-		if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-			getLogger().severe("홀로그래픽 플러그인이 없어서 꺼짐여");
-			this.setEnabled(false);
-			return;
-		}
+
+		//HolographicDisplays API dependency 제거
+//		if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+//			getLogger().severe("홀로그래픽 플러그인이 없어서 꺼짐여");
+//			this.setEnabled(false);
+//			return;
+//		}
 		
 		getServer().getPluginManager().registerEvents(this, this);
-		getLogger().info("[보끔] 스테이터스 플러그인이 로드 되었습니다. 0.54ver");
+		getLogger().info("[보끔] 스테이터스 플러그인이 로드 되었습니다. 0.55ver");
 		instance = this; 
 
 		for(int i = 298; i <= 317; i++) armour.add(i);
 		loadConfig(false); //설정값 로드
 		loadDatas(); //스탯 데이터 로드
 		
-		testTimer();
+//		showLvTimer();
 	}
-	
-	public void testTimer(){
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-		    @Override
-			public void run(){
-				for(Player p : Bukkit.getOnlinePlayers()){
-					StatData statData = StatFunction.getPlayerStatData(statList, p.getName());
-					if(statData != null){
-						Location l = p.getLocation();
-						l.add(0, 2.5, 0);
-						final Hologram hg = HologramsAPI.createHologram(instance, l);
-						hg.appendTextLine(ChatColor.RED+"LV: "+statData.lv);
-						Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
-							public void run() {
-								hg.delete();
-							}
-						}, 10l);
-					}
-				}
-		    }
-		}, 10, 10);
-	}
+
+	//HolographicDisplays API dependency 삭제
+//	public void showLvTimer(){
+//		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+//		    @Override
+//			public void run(){
+//				for(Player p : Bukkit.getOnlinePlayers()){
+//					StatData statData = StatFunction.getPlayerStatData(statList, p.getName());
+//					if(statData != null){
+//						Location l = p.getLocation();
+//						l.add(0, 2.5, 0);
+//						final Hologram hg = HologramsAPI.createHologram(instance, l);
+//						hg.appendTextLine(ChatColor.RED+"LV: "+statData.lv);
+//						Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new Runnable() {
+//							public void run() {
+//								hg.delete();
+//							}
+//						}, 10l);
+//					}
+//				}
+//		    }
+//		}, 10, 10);
+//	}
 	
 	public void onDisable(){
 		saveDatas();
@@ -187,7 +182,7 @@ public class Main extends JavaPlugin implements Listener{
 	
 	public void enchant(Player p, String args[]){
 		if(args.length < 3)p.sendMessage(title+
-				"/스탯 인첸트 <공격력/방어력/레벨제한/추가공격e/공격제한/추가균형/균형제한/추가민첩/민첩제한/추가방어/방어제한/생명력흡수/추가체력/크리티컬확률> 숫자");	
+				"/스탯 인첸트 <공격력/방어력/레벨제한/추가공격/공격제한/추가균형/균형제한/추가민첩/민첩제한/추가방어/방어제한/생명력흡수/추가체력/크리티컬확률> 숫자");
 		else{
 			if(args[1].equalsIgnoreCase("공격력") || args[1].equalsIgnoreCase("레벨제한") || 
 					args[1].equalsIgnoreCase("추가공격") || args[1].equalsIgnoreCase("공격제한") || 
@@ -214,16 +209,16 @@ public class Main extends JavaPlugin implements Listener{
 					lore = meta.getLore();
 					for(int i = 0; i < lore.size(); i++){
 						if(lore.get(i).contains(args[1])) {
-							lore.set(i, "§b]"+args[1]+" "+(amt < 0 ? "" : "+")+amt);
+							lore.set(i, "§7] §c"+args[1]+" "+(amt < 0 ? "" : "+")+amt);
 							check = true;
 							break;
 						}
 					}
-					if(!check) lore.add("§b]"+args[1]+" "+(amt < 0 ? "" : "+")+amt);
+					if(!check) lore.add("§7] §c"+args[1]+" "+(amt < 0 ? "" : "+")+amt);
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 				} else {
-					lore.add("§b]"+args[1]+" "+(amt < 0 ? "-" : "+")+amt);
+					lore.add("§7] §c"+args[1]+" "+(amt < 0 ? "-" : "+")+amt);
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 				}
@@ -293,7 +288,7 @@ public class Main extends JavaPlugin implements Listener{
 		 def_hp = 10;
 		 def_speed = 0;
 		 def_defense = 0;
-		hpPerLv = 80;
+		hpPerLv = 10;
 		baseHp = 50;
 		leftStatPerLv = 4;
 		criDamage = 2;
@@ -422,7 +417,7 @@ public class Main extends JavaPlugin implements Listener{
 	}
 	
 	@EventHandler
-	public void onClickInvetory(InventoryClickEvent e){
+	public void onClickInventory(InventoryClickEvent e){
 		  if(!(e.getWhoClicked() instanceof Player)) return; 
 		  Player p = (Player) e.getWhoClicked();
 		  int slotNum = e.getSlot();
@@ -464,7 +459,22 @@ public class Main extends JavaPlugin implements Listener{
 			p.sendMessage(title+"레벨업을 하여 §c"+1*leftStatPerLv+"§f스탯을 획득하였습니다.");
 		}
 	}
-	
+
+	@EventHandler
+	public void onPlayerLevelup(PlayerLevelChangeEvent evt){
+		Player p = evt.getPlayer();
+		StatData statData = StatFunction.getPlayerStatData(statList, p.getName());
+		if(statData == null) return;
+
+		int newLevel = evt.getNewLevel();
+		int nowLevel = statData.lv;
+
+		while(newLevel-- > nowLevel)
+		{
+			LevelUp(p);
+		}
+	}
+
 	@EventHandler
 	public void onPlayerHeldItem(PlayerItemHeldEvent e){
 		Player p = e.getPlayer();
@@ -476,7 +486,7 @@ public class Main extends JavaPlugin implements Listener{
 			if(itemData.itemLvLimit > statData.lv || itemData.itemBalLimit > statData.bal || itemData.itemAtkLimit > statData.atk
 					|| itemData.itemDexLimit > statData.dex || itemData.itemDefLimit > statData.def) {
 				e.setCancelled(true);
-				p.sendMessage(title+"해당 장비의 사용조건을 충족하지 못하여서 사용하실 수 업습니다.");
+				p.sendMessage(title+"해당 장비의 사용조건을 충족하지 못하여서 사용하실 수 없습니다.");
 				return;
 			}
 			statData.applyItems(e.getNewSlot());
@@ -489,7 +499,7 @@ public class Main extends JavaPlugin implements Listener{
 		StatData checkData = StatFunction.getPlayerStatData(statList, p.getName());
 		if(checkData == null){
 			checkData = createStatData(p.getName());
-			p.sendMessage(title+"EasyStatus 플러그인 0.52ver - 개발: Bokum");
+//			p.sendMessage(title+"SimpleStatus 플러그인 0.55ver - 개발: Bokum");
 			p.sendMessage(title+"환영합니다. 당신의 스테이터스 데이터를 생성하였습니다.");
 			p.sendMessage(title+"기본값: §aHP: "+baseHp+", LV: 0, BAL: 0 ATK: 0, DEX: 0, DEF: 0");
 			p.setLevel(0);
